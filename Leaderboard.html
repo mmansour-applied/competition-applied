@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wall of Champions Leaderboard</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS via CDN (JS loader). This loads Tailwind on the fly and avoids MIME type issues. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optionally customise Tailwind's theme to register our fonts. -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'league': ['\'League Spartan\'', 'sans-serif'],
+            'space': ['\'Space Grotesk\'', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="leader.css">
+  <!-- Favicons and other meta can go here -->
+</head>
+<body class="min-h-screen relative font-space">
+  <!-- Background gradient & sunburst -->
+  <div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-radial"></div>
+    <!-- Sunburst rays -->
+    <div class="absolute inset-0 opacity-30">
+      <!-- Using 12 divs rotated around the center to mimic the sunburst. Tailwind doesn't support custom transforms on arbitrary elements,
+           so we apply them inline via style attribute. -->
+      <template id="sunburst-template">
+        <div class="absolute top-1/2 left-1/2 w-px bg-gradient-to-t from-transparent via-white to-transparent origin-bottom" style="height:50vh"></div>
+      </template>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="relative z-10 py-4 sm:py-8">
+    <div class="container mx-auto px-4">
+      <div class="backdrop-blur-sm border-4 shadow-2xl rounded-2xl overflow-hidden" style="background-color:#FCF7EF; border-color:#21A4D2;">
+        <div class="text-white relative overflow-hidden" style="background: linear-gradient(to right, #21A4D2, #3893B7);">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-6">
+            <!-- Company logo -->
+            <div class="flex-shrink-0">
+              <img src="Convo_Mascot_1.png" alt="Conversation Labs Logo" class="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 drop-shadow-2xl object-contain">
+            </div>
+            <!-- Title -->
+            <div class="flex-1 text-center">
+              <h1 class="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-black font-league drop-shadow-lg" style="color:#FCF7EF">14‑DAY PHONE SKILLS SCRIMMAGE</h1>
+              <p class="text-xs sm:text-sm md:text-base font-semibold mt-1 sm:mt-2" style="color:#FCF7EF">Ace the simulation • Top the leaderboard • Win Cash</p>
+            </div>
+            <!-- Right-side emoji for balance -->
+            <div class="flex-shrink-0 flex items-center justify-center">
+              <span class="text-4xl sm:text-5xl md:text-6xl drop-shadow-2xl" aria-hidden="true">🏈</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="container mx-auto px-4 py-4 sm:py-8 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-8">
+      <!-- Leaderboard and Prizes section (spanning 3 columns on large screens) -->
+      <div class="lg:col-span-3 space-y-6">
+        <!-- Leaderboard card -->
+        <div class="backdrop-blur-sm border-4 shadow-2xl overflow-hidden rounded-2xl" style="background-color:#FCF7EF; border-color:#21A4D2;">
+          <!-- Leaderboard header -->
+          <div class="text-white relative overflow-hidden p-4" style="background: linear-gradient(to right, #21A4D2, #3893B7);">
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <span class="text-2xl sm:text-3xl" aria-hidden="true">🏆</span>
+                <span class="text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-lg">WALL OF CHAMPIONS</span>
+                <span class="text-2xl sm:text-3xl" aria-hidden="true">🏆</span>
+              </div>
+              <p class="text-lg font-semibold" style="color:#FCF7EF">Current Leaderboard Standings</p>
+            </div>
+          </div>
+          <!-- Leaderboard table -->
+          <div class="leaderboard-container">
+            <table class="min-w-full text-sm sm:text-base">
+              <thead class="sticky top-0 z-10">
+                <tr class="" style="background: linear-gradient(to right, #21A4D2, #3893B7);">
+                  <th class="w-16 sm:w-20 text-center text-white font-semibold py-2">RANK</th>
+                  <th class="text-white font-semibold py-2 px-2 sm:px-4">NAME</th>
+                  <th class="text-white font-semibold py-2 px-4 hidden sm:table-cell">DEALERSHIP</th>
+                  <th class="text-center text-white font-semibold py-2 px-4 w-20 sm:w-auto">SCORE</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body">
+                <!-- Rows will be injected here by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Prize section -->
+        <div class="backdrop-blur-sm border-4 shadow-2xl overflow-hidden rounded-2xl" style="background-color:#FCF7EF; border-color:#21A4D2;">
+          <!-- Prize header -->
+          <div class="text-white relative overflow-hidden p-4" style="background: linear-gradient(to right, #21A4D2, #3893B7);">
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+                <span class="text-xl sm:text-3xl font-bold tracking-wide drop-shadow-lg">🏆 CONTEST PRIZES 🏆</span>
+              </div>
+              <p class="text-sm sm:text-lg font-semibold" style="color:#FCF7EF">Cash Rewards for Top Performers</p>
+            </div>
+          </div>
+          <!-- Prize content grid -->
+          <div class="p-3 sm:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <!-- First Prize -->
+              <div class="text-white p-3 sm:p-4 rounded-xl border-2 shadow-lg" style="background: linear-gradient(to right, #21A4D2, #3893B7); border-color:#3893B7;">
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="px-2 py-1 rounded-full font-bold text-xs sm:text-sm" style="background-color:#FCF7EF; color:#21A4D2;">1ST</div>
+                  <span class="font-semibold text-sm sm:text-base">$1000 | $500</span>
+                </div>
+                <div class="font-medium text-xs sm:text-sm" style="color:#FCF7EF;">90 day access for 5 users</div>
+              </div>
+              <!-- Second Prize -->
+              <div class="text-white p-3 sm:p-4 rounded-xl border-2 shadow-md" style="background: linear-gradient(to right, #3893B7, #21A4D2); border-color:#21A4D2;">
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="px-2 py-1 rounded-full font-bold text-xs sm:text-sm" style="background-color:#E8F4F8; color:#3893B7;">2ND</div>
+                  <span class="font-semibold text-sm sm:text-base">$500 | $250</span>
+                </div>
+                <div class="font-medium text-xs sm:text-sm" style="color:#FCF7EF;">90 day access for 5 users</div>
+              </div>
+              <!-- Third Prize -->
+              <div class="text-white p-3 sm:p-4 rounded-xl border-2 shadow-md sm:col-span-2 lg:col-span-1" style="background: linear-gradient(to right, #21A4D2, #3893B7); border-color:#3893B7;">
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="px-2 py-1 rounded-full font-bold text-xs sm:text-sm" style="background-color:#FCF7EF; color:#21A4D2;">3RD</div>
+                  <span class="font-semibold text-sm sm:text-base">90 day access for 5 users</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rules sidebar (spans 1 column on large screens) -->
+      <div class="lg:col-span-1">
+        <div class="h-fit sticky top-4 backdrop-blur-sm border-4 shadow-2xl overflow-hidden rounded-2xl" style="background-color:#FCF7EF; border-color:#21A4D2;">
+          <!-- Rules header -->
+          <div class="text-white relative overflow-hidden p-4" style="background: linear-gradient(to right, #21A4D2, #3893B7);">
+            <!-- Decorative zaps (lightning bolts) using emojis for simplicity -->
+            <div class="absolute inset-0 overflow-hidden">
+              <div class="absolute opacity-40 animate-pulse text-white" style="top:10%; left:20%; font-size:14px;">⚡</div>
+              <div class="absolute opacity-40 animate-pulse text-white" style="top:50%; left:70%; font-size:16px; animation-delay:0.5s;">⚡</div>
+              <div class="absolute opacity-40 animate-pulse text-white" style="top:80%; left:40%; font-size:12px; animation-delay:1s;">⚡</div>
+            </div>
+            <div class="relative z-10 text-center">
+              <div class="flex items-center justify-center gap-2 mb-1">
+                <span class="text-lg sm:text-2xl font-bold tracking-wide drop-shadow-lg">CONTEST RULES</span>
+              </div>
+              <p class="text-xs sm:text-sm font-semibold" style="color:#FCF7EF;">How to Play &amp; Win</p>
+            </div>
+          </div>
+          <!-- Rules content -->
+          <div class="rules-container space-y-3 sm:space-y-4 p-3 sm:p-6">
+            <!-- Rule 1 -->
+            <div class="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border-2 shadow-md" style="background: linear-gradient(to right, #E8F4F8, #FCF7EF); border-color:#21A4D2;">
+              <div class="p-1.5 sm:p-2 rounded-full flex-shrink-0" style="background-color:#21A4D2;">
+                <span class="text-white">📞</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-bold text-gray-800 text-sm sm:text-lg break-all sm:break-normal">Call +1 (888) 565‑4065</p>
+                <p class="text-gray-600 font-medium text-xs sm:text-base">Use the provided number to participate</p>
+              </div>
+            </div>
+            <!-- Rule 2 -->
+            <div class="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border-2 shadow-md" style="background: linear-gradient(to right, #FCF7EF, #E8F4F8); border-color:#3893B7;">
+              <div class="p-1.5 sm:p-2 rounded-full flex-shrink-0" style="background-color:#3893B7;">
+                <span class="text-white">👤</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-bold text-gray-800 text-sm sm:text-lg">State your name and dealership</p>
+                <p class="text-gray-600 font-medium text-xs sm:text-base">Identify yourself at the start of the call</p>
+              </div>
+            </div>
+            <!-- Rule 3 -->
+            <div class="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border-2 shadow-md" style="background: linear-gradient(to right, #E8F4F8, #FCF7EF); border-color:#21A4D2;">
+              <div class="p-1.5 sm:p-2 rounded-full flex-shrink-0" style="background-color:#21A4D2;">
+                <span class="text-white">🎤</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-bold text-gray-800 text-sm sm:text-lg">Successfully secure an appointment</p>
+                <p class="text-gray-600 font-medium text-xs sm:text-base">Provide the best customer experience to score more points</p>
+              </div>
+            </div>
+            <!-- Rule 4 -->
+            <div class="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border-2 shadow-md" style="background: linear-gradient(to right, #FCF7EF, #E8F4F8); border-color:#3893B7;">
+              <div class="p-1.5 sm:p-2 rounded-full flex-shrink-0" style="background-color:#3893B7;">
+                <span class="text-white">🔄</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-bold text-gray-800 text-sm sm:text-lg">Unlimited attempts!</p>
+                <p class="text-gray-600 font-medium text-xs sm:text-base">Your best recorded score goes on the leaderboard</p>
+              </div>
+            </div>
+            <!-- Final note -->
+            <div class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl border-4 shadow-lg text-center" style="background: linear-gradient(to right, #E8F4F8, #FCF7EF); border-color:#21A4D2;">
+              <p class="font-bold text-gray-800 text-sm sm:text-lg leading-relaxed">🏆 Your highest score will automatically be recorded on the Wall of Champions! 🏆</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 mt-8 sm:mt-16">
+    <div class="container mx-auto px-4 py-4 sm:py-8">
+      <div class="text-center space-y-3 sm:space-y-4">
+        <div class="rounded-2xl p-4 sm:p-6 backdrop-blur-sm border-4 shadow-2xl" style="background-color:#FCF7EF; border-color:#21A4D2;">
+          <p class="text-base sm:text-lg font-semibold text-gray-800">Event Dates: August 18th – September 1st, 2025</p>
+        </div>
+        <p class="text-white font-semibold text-sm sm:text-lg drop-shadow-lg">APPLIED CONCEPTS × Conversation Labs</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="leaderscript.js"></script>
+  <script>
+    // Inject sunburst rays by cloning the template element 12 times and rotating each copy.
+    (function() {
+      const template = document.getElementById('sunburst-template');
+      if (template) {
+        const container = template.parentElement;
+        for (let i = 0; i < 12; i++) {
+          const clone = template.content.firstElementChild.cloneNode(true);
+          clone.style.transform = `rotate(${i * 30}deg) translateY(-50%)`;
+          container.appendChild(clone);
+        }
+        // Remove the template itself
+        template.remove();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+/* Custom CSS overrides and additions for the Wall of Champions site */
+
+/* Radial background used on the page. It mirrors the Figma design's soft pastel gradient. */
+.bg-gradient-radial {
+  /* fallback color */
+  background: #fcf7ef;
+  background: radial-gradient(circle at center, #FCF7EF 0%, #E8F4F8 40%, #21A4D2 75%, #3893B7 100%);
+}
+
+/* Ensure our fonts are applied globally */
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #1a1a1a;
+  /* Enable scrolling */
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Smooth scrolling behavior */
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, .font-league {
+  font-family: 'League Spartan', sans-serif;
+}
+
+/* Smooth scrolling for better user experience */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure content sections can scroll properly */
+main {
+  overflow-y: auto;
+  min-height: calc(100vh - 200px); /* Account for header and footer */
+}
+
+/* Leaderboard table scrolling */
+.leaderboard-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #21A4D2 #E8F4F8;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+.leaderboard-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leaderboard-container::-webkit-scrollbar-track {
+  background: #E8F4F8;
+  border-radius: 4px;
+}
+
+.leaderboard-container::-webkit-scrollbar-thumb {
+  background: #21A4D2;
+  border-radius: 4px;
+}
+
+.leaderboard-container::-webkit-scrollbar-thumb:hover {
+  background: #3893B7;
+}
+
+/* Rules sidebar scrolling */
+.rules-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #21A4D2 #E8F4F8;
+}
+
+.rules-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rules-container::-webkit-scrollbar-track {
+  background: #E8F4F8;
+  border-radius: 4px;
+}
+
+.rules-container::-webkit-scrollbar-thumb {
+  background: #21A4D2;
+  border-radius: 4px;
+}
+
+.rules-container::-webkit-scrollbar-thumb:hover {
+  background: #3893B7;
+}
+
+/* Mobile responsive scrolling adjustments */
+@media (max-width: 768px) {
+  .leaderboard-container {
+    max-height: 50vh;
+  }
+  
+  .rules-container {
+    max-height: 60vh;
+  }
+  
+  main {
+    min-height: calc(100vh - 150px);
+  }
+}
+
+/* Ensure the sticky sidebar works properly with scrolling */
+@media (min-width: 1024px) {
+  .sticky {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+/* Ensure table headers stay visible during scrolling */
+thead.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(to right, #21A4D2, #3893B7);
+}
+
+/* Add some padding to the bottom of scrollable containers for better UX */
+.leaderboard-container,
+.rules-container {
+  padding-bottom: 1rem;
+}
+
+/* Helper classes for rank rows. These are applied via JavaScript to visually differentiate top leaders. */
+.rank-1 {
+  background: linear-gradient(to right, #E8F4F8, #FCF7EF);
+  border-color: #21A4D2;
+  border-width: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.rank-2 {
+  background: linear-gradient(to right, #FCF7EF, #E8F4F8);
+  border-color: #3893B7;
+  border-width: 2px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.rank-3 {
+  background: linear-gradient(to right, #F8F9FA, #FCF7EF);
+  border-color: #21A4D2;
+  border-width: 2px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Default row appearance */
+.rank-default {
+  background-color: rgba(252, 247, 239, 0.8);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover effect on default rows */
+.rank-default:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* Badge styling for rank number. The background and border are set via inline styles in JavaScript. */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2rem;
+  border-width: 2px;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
